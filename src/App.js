@@ -1,43 +1,47 @@
-import React, { useState } from 'react';
-import { Route, withRouter } from 'react-router';
-import ProgressBar from 'custom-react-step-progress-bar';
+import React, { useState } from "react";
+import { Route } from "react-router";
+import ProgressBar from "custom-react-step-progress-bar";
 
-const stepperComponent = (props) => {
-  const { path } = props.match;
+const stepperComponent = props => {
   const [step, setStep] = useState(0);
   const [stepOne, setStepOne] = useState(false);
   const [stepTwo, setStepTwo] = useState(false);
   const [stepThree, setStepThree] = useState(false);
 
+  const preFixPath = prefix => path => `${prefix}${path}`;
+
+  const LANDING = "";
+
+  const getRegPath = preFixPath(LANDING);
+
   const onStepThreeClick = () => {
     setStep(2);
-    props.history.push(`${path}/step-3`);
+    props.history.push(getRegPath("/step-3"));
   };
 
   const onStepTwoClick = () => {
     setStep(1);
-    console.log(path);
-    props.history.push(`${path}/step-2`);
+    props.history.push(getRegPath("/step-2"));
   };
 
   const onStepOneClick = () => {
     setStep(0);
-    props.history.push(path);
+    props.history.push(getRegPath("/"));
   };
 
   const progressBarMenu = [
     {
-      stepName: 'Step One',
+      stepName: "Step One",
       onClick: onStepOneClick,
       completeStep: stepOne,
     },
     {
-      stepName: 'Step Two',
+      stepName: "Step Two",
       onClick: onStepTwoClick,
       completeStep: stepTwo,
     },
     {
-      stepName: 'Step Three',
+      stepName: "Step Three",
       onClick: onStepThreeClick,
       completeStep: stepThree,
     },
@@ -95,12 +99,16 @@ const stepperComponent = (props) => {
         <ProgressBar progressBarMenu={progressBarMenu} currentActive={step} />
       </div>
       <div className="add-patient-children">
-        <Route exact path={`${path}`} component={StepOneDetails} />
-        <Route exact path={`${path}/step-2`} component={StepTwoDetails} />
-        <Route exact path={`${path}/step-3`} component={StepThreeDetails} />
+        <Route exact path={getRegPath("/")} component={StepOneDetails} />
+        <Route exact path={getRegPath("/step-2")} component={StepTwoDetails} />
+        <Route
+          exact
+          path={getRegPath("/step-3")}
+          component={StepThreeDetails}
+        />
       </div>
     </div>
   );
 };
 
-export default withRouter(stepperComponent);
+export default stepperComponent;
